@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<record id="view_update_invoice_tree" model="ir.ui.view">
+            <field name="name">update.invoice.tree</field>
+            <field name="model">account.update</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Update Invoice">
+                    <field name="file"/>
+                </tree>
+            </field>
+        </record>
+        
+        
+        <record id="view_update_invoice_form" model="ir.ui.view">
+            <field name="name">update.invoice.form</field>
+            <field name="model">update.invoice</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Update Invoice">
+                	<group>
+                		<field name="file" />
+                		<button name="fix_product" type="object" string="Fix Duplicat Product"/>
+                		<button name="update_product_single" type="object" string="Update Product Single"/>
+                		<button name="update_product" type="object" string="Update Product"/>
+                		<button name="invoice_validate" type="object" string="Invoice/Refund Validate"/>
+                		<!--button name="invoice_paid" type="object" string="Paid Invoice"/>
+                		<button name="refund_paid" type="object" string="Paid Refund"/-->
+                		<button name="invoice_create" type="object" string="Create Invoice/Refund"/>
+                	</group>
+                </form>
+            </field>
+        </record>
+        
+        
+        <record id="action_update_invoice" model="ir.actions.act_window">
+            <field name="name">Update Invoices</field>
+            <field name="res_model">update.invoice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_update_invoice_tree"/>
+        </record>
+        
+        
+        <menuitem id="menu_update_invoice" name="Update Invoice" parent="account.menu_finance" sequence="3"/>
+        
+        <menuitem id="menu_sub_update_invoice" name="Update Invoice" action="action_update_invoice" parent="menu_update_invoice" sequence="5"/>
+        
+        
+	</data>
+</openerp>

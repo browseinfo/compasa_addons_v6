@@ -1,0 +1,148 @@
+<?xml version="1.0"?>
+
+<openerp>
+    <data>
+
+		<record id="sequence_account_factura_type"
+			model="ir.sequence.type">
+			<field name="name">Account Factura</field>
+			<field name="code">account.factura</field>
+		</record>
+
+		<record id="sequence_account_factura" model="ir.sequence">
+			<field name="name">Account Factura</field>
+			<field name="code">account.factura</field>
+			<field eval="7" name="padding" />
+			<field name="prefix">000-001-01-</field>
+		</record>    
+    
+        <record id="purchase_requisition_form_compasa" model="ir.ui.view">
+            <field name="name">purchase.requisition.form.compasa</field>
+            <field name="model">purchase.requisition</field>
+            <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form"/>
+            <field name="arch" type="xml">
+                <field name="company_id" position="after">
+                    <field name="x_tipo_proveedor"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="payment_order_form_compasa" model="ir.ui.view">
+            <field name="name">payment.order.form.compasa</field>
+            <field name="model">payment.order</field>
+            <field name="inherit_id" ref="account_payment.view_payment_order_form"/>
+            <field name="arch" type="xml">
+                <field name="reference" position="after">
+                    <field name="x_numcheque"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="sale_order_form_inherit_1_compasa" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit.1.compasa</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_layout.view_order_form_inherit_1"/>
+            <field name="arch" type="xml">
+                <field name="partner_order_id" position="after">
+                    <field name="x_nombre_contado"/>
+                    <field name="x_proyecto"/>
+                </field>
+                <field name="product_uos" position="after">
+                    <field name="x_stock"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="purchase_order_form_compasa" model="ir.ui.view">
+            <field name="name">purchase.order.form.compasa</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <field name="partner_ref" position="after">
+                    <field name="x_tipo_proveedor"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="account_invoice_form_compasa" model="ir.ui.view">
+            <field name="name">account.invoice.form.compasa</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <field name="number" position="after">
+                    <field name="x_numfacruta" required="1"/>
+                    <newline/>
+                </field>
+<!--                 <xpath expr="//button[@name='237']" position="after"> -->
+<!--                     <label string="" colspan="1"/> -->
+<!--                     <field name="x_proyecto" colspan="2"/> -->
+<!--                 </xpath> -->
+                <field name="user_id" position="replace">
+                </field>
+                <field name="name" position="attributes">
+                    <attribute name="string">Referencia Cliente</attribute>
+                </field>
+                <field name="name" position="after">
+                    <field name="user_id"/>
+                </field>
+                <field name="fiscal_position" position="replace">
+                    <field name="x_nombre_contado"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="account_invoice_supplier_form_compasa" model="ir.ui.view">
+            <field name="name">account.invoice.supplier.form.compasa</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <field name="number" position="after">
+                    <field name="x_numfacruta" required="1"/>
+                    <newline/>
+                </field>
+                 <field name="date_invoice" position="before">
+                    <field name="x_tipo_proveedor"/>
+                    <field name="x_tipo_contenedor" attrs="{'required': [('x_tipo_proveedor','=','extranjero')]}"/>
+                    <field name="x_cantidad_contenedor" attrs="{'required': [('x_tipo_contenedor','!=',False)]}"/>
+                    <newline/>
+                </field>
+            </field>
+        </record>
+    
+        <!--record id="customer_credit_limit_view" model="ir.ui.view">
+            <field name="name">res.partner.limit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="account.view_partner_property_form"/>
+            <field name="arch" type="xml">
+                <field name="credit_limit" position="before">
+                    <field name="is_manager" invisible="1"/>
+                </field>
+                <field name="credit_limit" position="attributes">
+                    <attribute name="attrs">{'readonly': [('is_manager','=',False)]}</attribute>
+                </field>
+            </field>
+        </record-->
+
+        <record id="po_view_group" model="ir.ui.view">
+            <field name="name">purchase.order.group</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+            <group col="11" colspan="4" position="replace">
+                    <group col="11" colspan="4">
+                    <field name="state" widget="statusbar" statusbar_visible="draft,approved,done" statusbar_colors='{"except_picking":"red","except_invoice":"red","confirmed":"blue","wait":"blue"}' readonly="1"/>
+                    <button name="purchase_cancel" states="draft,confirmed,wait_auth" string="Cancel" icon="gtk-cancel"/>
+                    <button name="action_cancel_draft" states="cancel" string="Set to Draft" type="object" icon="gtk-convert"/>
+                    <button name="action_cancel" states="approved,except_picking,except_invoice,wait" string="Cancel Purchase Order" type="object" icon="gtk-cancel"/>
+                    <button name="picking_ok" states="except_picking" string="Manually Corrected" icon="gtk-convert"/>
+                    <button name="invoice_ok" states="except_invoice" string="Manually Corrected" icon="gtk-convert"/>
+                    <button name="purchase_confirm" states="draft" groups="purchase.group_purchase_manager" string="Convert to Purchase Order" icon="gtk-go-forward"/>
+                    <button name="purchase_appbuyer" states="wait_auth" string="Approve Purchase" groups="purchase.group_purchase_manager" icon="gtk-ok"/>
+                    <button name="purchase_approve" states="confirmed" string="Approved" groups="purchase.group_purchase_manager" icon="gtk-go-forward"/>
+                    <button name="%(purchase.report_purchase_order)d" string="Print" states="approved" type="action" icon="gtk-print"/>
+            </group></group>
+            </field>
+        </record>
+    
+    </data>
+</openerp>

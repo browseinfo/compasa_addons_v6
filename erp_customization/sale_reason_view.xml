@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+    	<record id="view_sale_order_cancel_reason_tree" model="ir.ui.view">
+            <field name="name">sale.order.cancel.reason.tree</field>
+            <field name="model">sale.order.cancel.reason</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Sale Order Cancel Reasons">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_sale_order_cancel_reason_form" model="ir.ui.view">
+            <field name="name">sale.order.cancel.reason.form</field>
+            <field name="model">sale.order.cancel.reason</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Sale Order Cancel Reasons">
+                	<group>
+                    	<field name="name"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_sale_order_cancel_reason" model="ir.actions.act_window">
+            <field name="name">action.sale.order.cancel.reason</field>
+            <field name="res_model">sale.order.cancel.reason</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_sale_order_cancel_reason_tree"/>
+        </record>
+
+        <menuitem id="menu_sale_order_cancel_reason"
+          parent="base.menu_sale_config_sales"
+          name="Sale Order Cancel Reasons"
+          action="action_sale_order_cancel_reason"
+          sequence="15"/>
+
+        <record id="view_sale_order_cancel_exten" model="ir.ui.view">
+            <field name="name">sale.order.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_cancel']" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_cancel']" position="before">
+                    <button name="%(action_sale_order_cancel)d" states="manual,progress" string="Cancel Order" type="action" groups="base.group_user"/>
+                </xpath>
+                <xpath expr="//button[@name='cancel']" position="attributes">
+                    <attribute name="type">action</attribute>
+                    <attribute name="name">%(action_sale_order_cancel)d</attribute>
+                </xpath>
+                <xpath expr="/form/group/group/field[@name='shipped']" position="after">
+                	<field name="cancel_reason_id"/>
+                </xpath>
+            </field>
+        </record>
+
+       	<record id="view_sale_order_line_extended" model="ir.ui.view">
+            <field name="name">sale.order.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_layout.view_order_form_inherit_1"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+               	<xpath expr="//field[@name='abstract_line_ids']/tree/field[@name='discount']" position="after">
+                	<field name="markup"/>
+                </xpath>
+                <xpath expr="//field[@name='abstract_line_ids']//form/notebook/page/group/field[@name='discount']" position="after">
+                	<field name="markup" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+        
+        
+        <record id="view_sale_margin_form_extended" model="ir.ui.view" >
+            <field name="name">sale.margin.form.view.extended</field>
+            <field name="type">form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_margin.sale_margin_sale_order" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='margin']" position="replace">
+                    <field name="margin" groups="base.group_sale_manager"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_sale_margin_tree_extended" model="ir.ui.view" >
+            <field name="name">sale.margin.tree.view.extended</field>
+            <field name="type">tree</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_margin.sale_margin_sale_order_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='margin']" position="replace">
+                    <field name="margin" groups="base.group_sale_manager"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>
